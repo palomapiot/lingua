@@ -1,0 +1,9 @@
+{
+    "dataset": {
+        "annotation-mode": "Modo anotación",
+        "export-dataset": "Exportar Datos",
+        "previous": "Anterior",
+        "next": "Seguinte",
+        "filter": "Filtrar"
+    }
+}
