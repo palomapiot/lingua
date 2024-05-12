@@ -1,13 +1,9 @@
 import { type ComputedRef, defineComponent, inject, ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import type LoginService from '@/account/login.service';
-
 export default defineComponent({
   compatConfig: { MODE: 3 },
   setup() {
-    const loginService = inject<LoginService>('loginService');
-
     const authenticated = inject<ComputedRef<boolean>>('authenticated');
     const username = inject<ComputedRef<string>>('currentUsername');
 
@@ -30,11 +26,15 @@ export default defineComponent({
     };
 
     const closeModal = () => {
+      console.log('form ok, closing modal');
+      datasetNameEmpty.value = false;
+      datasetAuthorsEmpty.value = false;
+      datasetEmpty.value = false;
+      document.getElementById('datasetName').value = '';
+      document.getElementById('datasetAuthors').value = '';
+      document.getElementById('datasetInput').value = '';
+      selectedDataset = "";
       isModalOpen.value = false;
-    };
-
-    const openLogin = () => {
-      loginService.openLogin();
     };
 
     const sendFile = (e) => {
@@ -64,12 +64,7 @@ export default defineComponent({
       console.log(selectedDataset);
         
       if (datasetName != "" && datasetAuthors != "" && selectedDataset != "") {
-        console.log('form ok, closing modal')
-        document.getElementById('datasetName').value = '';
-        document.getElementById('datasetAuthors').value = '';
-        document.getElementById('datasetInput').value = '';
-        selectedDataset = "";
-        isModalOpen.value = false;
+        closeModal();
       }
 
     };
@@ -84,7 +79,6 @@ export default defineComponent({
       isModalOpen: computed(() => isModalOpen.value),
       openModal,
       closeModal,
-      openLogin,
       sendFile,
       uploadDataset,
       t$: useI18n().t,

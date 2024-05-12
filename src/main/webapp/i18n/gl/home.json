@@ -24,6 +24,11 @@
     "close": "Pechar",
     "error-no-dataset-name": "O nome do conxunto de datos é necesario.",
     "error-no-dataset-authors": "Os autores do conxunto de datos é necesario.",
-    "error-no-dataset-file": "O ficheiro é necesario."
+    "error-no-dataset-file": "O ficheiro é necesario.",
+    "field-name": "Nome do campo",
+    "new-annotation": "Nova anotación",
+    "type": "Tipo: ",
+    "text": "Texto",
+    "label": "Etiqueta"
   }
 }

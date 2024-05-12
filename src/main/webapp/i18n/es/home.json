@@ -24,6 +24,11 @@
     "close": "Cerrar",
     "error-no-dataset-name": "El nombre del conjunto de datos es obligatorio.",
     "error-no-dataset-authors": "Los autores del conjunto de datos es obligatorio.",
-    "error-no-dataset-file": "El fichero es obligatorio."
+    "error-no-dataset-file": "El fichero es obligatorio.",
+    "field-name": "Nombre del campo",
+    "new-annotation": "Nueva anotación",
+    "type": "Tipo: ",
+    "text": "Texto",
+    "label": "Etiqueta"
   }
 }

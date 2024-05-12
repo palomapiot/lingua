@@ -34,8 +34,11 @@ export default defineComponent({
         content: []
     };
 
+    const annotations = [];
+
     const selectedRows = ref([]);
     const isCheckboxSelected = ref(false);
+    const isModalOpen = ref(false);
 
     const generateCSV = () => {
         console.log('ID:', props.id);
@@ -61,6 +64,14 @@ export default defineComponent({
     onBeforeMount(() => {
         generateCSV();
     });
+
+    const openModal = () => {
+      isModalOpen.value = true;
+    };
+
+    const closeModal = () => {
+      isModalOpen.value = false;
+    };
 
     const exportDataset = () => {
       console.log("Selected Rows:", selectedRows.value);
@@ -138,6 +149,10 @@ export default defineComponent({
       nextPage,
       gotoPage,
       currentPage,
+      isModalOpen,
+      openModal,
+      closeModal,
+      annotations,
       t$: useI18n().t,
     };
   },

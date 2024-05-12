@@ -6,15 +6,19 @@
             <small class="text-body-secondary">{{ dataset.authors }}</small>
             </h3>
         </div>
-        <div class="col-md-3 btn-group text-center">
+
+        <div class="col-md-3" style="float: right;">
             <div>
-                <a type="button" class="btn btn-outline-info" :href="'/dataset/annotation/' + dataset.id"  style="display: inline-block;" v-text="t$('dataset.annotation-mode')"></a>
-            </div>
-            <hr>
-            <div>
-                <button type="button" class="btn btn-outline-primary" v-on:click="exportDataset()" style="display: inline-block;" v-text="t$('dataset.export-dataset')"></button>
+                <div>
+                    <button type="button" class="btn btn-outline-primary" v-on:click="exportDataset()" style="float: right; margin-left: 1em;" v-text="t$('dataset.export-dataset')"></button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-outline-info" @click="openModal" style="float: right;" v-text="t$('dataset.annotation-mode')"></button>
+                </div>
             </div>
         </div>
+
+
         <div class="col-md-12" style="margin-top: 1em;">
             <form class="d-flex">
                 <div class="input-group mb-3">
@@ -66,7 +70,80 @@
             </nav>
         </div>
     </div>
+
+    <div class="modal" v-bind:style="isModalOpen ? 'display: block;' : 'display: none;'">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" v-text="t$('home.new-annotation')"></h5>
+                <button type="button" class="btn-close" @click="closeModal" aria-label="Close">
+                <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                <fieldset>
+                    <div>
+                        <label for="fieldName1" class="form-label mt-4" v-text="t$('home.field-name')"></label>
+                        <input type="text" class="form-control" id="fieldName1" aria-describedby="fieldName1" v-bind:placeholder="t$('home.field-name')" required>
+                        <div class="d-flex" style="margin-top: 1em;">
+                            <p v-text="t$('home.type')"></p>
+                            <div class="form-check" style="margin-left: 1em;">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="checkboxFreetext1"
+                                    name="checkboxFreetext1"
+                                    style="accent-color: #1a1a1a;"/>
+                                <label class="form-check-label" for="checkboxFreetext1" v-text="t$('home.text')"></label>
+                            </div>
+                            <div class="form-check" style="margin-left: 1em;">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="checkboxLabel1"
+                                    name="checkboxLabel1"
+                                    style="accent-color: #1a1a1a;"/>
+                                <label class="form-check-label" for="checkboxLabel1" v-text="t$('home.label')"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="fieldName2" class="form-label mt-4" v-text="t$('home.field-name')"></label>
+                        <input type="text" class="form-control" id="fieldName2" aria-describedby="fieldName2" v-bind:placeholder="t$('home.field-name')" required>
+                        <div class="d-flex" style="margin-top: 1em;">
+                            <p v-text="t$('home.type')"></p>
+                            <div class="form-check" style="margin-left: 1em;">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="checkboxFreetext2"
+                                    name="checkboxFreetext2"
+                                    style="accent-color: #1a1a1a;"/>
+                                <label class="form-check-label" for="checkboxFreetext2" v-text="t$('home.text')"></label>
+                            </div>
+                            <div class="form-check" style="margin-left: 1em;">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="checkboxLabel2"
+                                    name="checkboxLabel2"
+                                    style="accent-color: #1a1a1a;"/>
+                                <label class="form-check-label" for="checkboxLabel2" v-text="t$('home.label')"></label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-primary" :href="'/dataset/annotation/' + dataset.id"  style="display: inline-block;" v-text="t$('dataset.annotation-mode')"></a>
+                <button type="button" class="btn btn-secondary" @click="closeModal" v-text="t$('home.close')"></button>
+            </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 
 <script lang="ts" src="./dataset.component.ts"></script>
-  

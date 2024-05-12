@@ -24,6 +24,11 @@
     "close": "Close",
     "error-no-dataset-name": "Dataset name is required.",
     "error-no-dataset-authors": "Dataset authors is required.",
-    "error-no-dataset-file": "Dataset file is required."
+    "error-no-dataset-file": "Dataset file is required.",
+    "field-name": "Field name",
+    "new-annotation": "New annotation",
+    "type": "Type: ",
+    "text": "Text",
+    "label": "Label"
   }
 }
