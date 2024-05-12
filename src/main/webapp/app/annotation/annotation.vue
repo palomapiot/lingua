@@ -36,7 +36,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ Object.keys(k)[0] }}</h5>
                     <div v-if="Object.values(k)[0] == 'freetext'">
-                        <textarea class="form-control" id="annotationFreetext" rows="4" v-model="annotationFreetext"></textarea>
+                        <textarea ref="textareaRef" class="form-control" id="annotationFreetext" rows="4" v-model="annotationFreetext"></textarea>
                     </div>
                     <div class="bs-component mb-6" v-if="Array.isArray(Object.values(k)[0])">
                         <div class="btn-group" role="group" id="annotationLabel" aria-label="">

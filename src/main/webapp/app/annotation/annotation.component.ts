@@ -1,6 +1,6 @@
 import { defineComponent, ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { onBeforeMount } from 'vue';
+import { onBeforeMount, onMounted, nextTick } from 'vue';
 import Dataset from '@/dataset/dataset.component';
 
 export default defineComponent({
@@ -20,6 +20,7 @@ export default defineComponent({
         annotation_header: [],
         content: []
     };
+    const textareaRef = ref(null);
     const annotationFreetext = ref(null);
     const annotationLabel = ref(null);
     const showSuccessAlert = ref(false);
@@ -74,6 +75,9 @@ export default defineComponent({
         generateCSV();
     });
 
+    watch(textareaRef, (newValue) => {
+      textareaRef.value[0].focus();
+    });
     // Iteration
     const currentRow = ref(1);
 
@@ -87,6 +91,7 @@ export default defineComponent({
     const nextRow = () => {
     if (currentRow.value < totalRows.value) {
       currentRow.value++;
+      textareaRef.value[0].focus();
     }};
 
 
@@ -97,6 +102,7 @@ export default defineComponent({
 
     return {
       dataset,
+      textareaRef,
       annotationFreetext,
       annotationLabel,
       saveAnnotation,
