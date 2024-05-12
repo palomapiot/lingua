@@ -4,17 +4,15 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeMount } from 'vue';
 
 type Dataset = {
+    id: string;
     name: string;
     authors: string;
-    header: string[];
-    content: DatasetItem[];
+    header: {}[];
+    annotation_header: {}[];
+    content: {}[];
 };
-
-type DatasetItem = {
-    id: number;
-    label: string;
-    text: string;
-};
+// Header types: id, label, text, metadata
+// Header annotation types: freetext, options (list with values)
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -28,9 +26,11 @@ export default defineComponent({
     const datasetService = inject<DatasetService>('datasetService');
 
     var dataset: Dataset = {
+        id: '',
         name: '',
         authors: '',
         header: [],
+        annotation_header: [],
         content: []
     };
 
@@ -39,7 +39,7 @@ export default defineComponent({
 
     const generateCSV = () => {
         console.log('ID:', props.id);
-        const labels: string[] = ['0', '1'];
+        const labels: string[] = ['NO HATE', 'HATE'];
         const texts: string[] = ['Lorem ipsum dolor sit amet', 'Consectetur adipiscing elit', 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', /* Add more random texts as needed */];
         const numSamples: number = 26;
   
@@ -51,10 +51,11 @@ export default defineComponent({
             pairs.push({ id: i, label: randomLabel, text: randomText });
         }
   
+        dataset.id = '3';
         dataset.name = 'MetaHate 2024'
         dataset.authors = 'Piot et al. 2024'
         dataset.content = pairs;
-        dataset.header = ['Id', 'Label', 'Text'];
+        dataset.header = ['id', 'label', 'text'];
     };
 
     onBeforeMount(() => {

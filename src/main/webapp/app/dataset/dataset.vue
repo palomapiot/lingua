@@ -8,7 +8,7 @@
         </div>
         <div class="col-md-3 btn-group text-center">
             <div>
-                <button type="button" class="btn btn-outline-info" v-on:click="" style="display: inline-block;" v-text="t$('dataset.annotation-mode')"></button>
+                <a type="button" class="btn btn-outline-info" :href="'/dataset/annotation/' + dataset.id"  style="display: inline-block;" v-text="t$('dataset.annotation-mode')"></a>
             </div>
             <hr>
             <div>

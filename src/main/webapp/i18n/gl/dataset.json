@@ -1,9 +1,11 @@
 {
     "dataset": {
         "annotation-mode": "Modo anotación",
+        "inspect-mode": "Modo inspeccionar",
         "export-dataset": "Exportar Datos",
         "previous": "Anterior",
         "next": "Seguinte",
-        "filter": "Filtrar"
+        "filter": "Filtrar",
+        "save": "Gardar"
     }
 }

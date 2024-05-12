@@ -7,6 +7,7 @@ import admin from '@/router/admin';
 import entities from '@/router/entities';
 import pages from '@/router/pages';
 import datasets from '@/router/dataset';
+import annotation from '@/router/annotation';
 
 export const createRouter = () =>
   createVueRouter({
@@ -34,6 +35,7 @@ export const createRouter = () =>
       entities,
       ...pages,
       ...datasets,
+      ...annotation,
     ],
   });
 
