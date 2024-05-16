@@ -44,7 +44,7 @@
                 </div>
                 <div>
                   <label for="datasetInput" class="form-label mt-4" v-text="t$('home.dataset-file')"></label>
-                  <input class="form-control" type="file" id="datasetInput" @change="sendFile" accept=".csv, .tsv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                  <input class="form-control" type="file" id="datasetInput" @change="pickFile" accept=".csv, .tsv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
                   <div class="invalid-feedback" v-bind:style="datasetEmpty ? 'display: block;' : 'display: none;'" v-text="t$('home.error-no-dataset-file')"></div>
                 </div>
                 <br>

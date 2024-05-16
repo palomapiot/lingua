@@ -1,8 +1,8 @@
-import { defineComponent, ref, inject, computed, watch } from 'vue';
-import type DatasetService from '@/dataset/dataset.service';
+import { defineComponent, ref, inject, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
+import DatasetService from '@/dataset/dataset.service';
 
 type Dataset = {
     id: string;
@@ -10,9 +10,10 @@ type Dataset = {
     authors: string;
     header: {}[];
     annotation_header: {}[];
+    total_items: number;
     content: {}[];
 };
-// Header types: id, label, text, metadata
+// Header types: id, label, text, metadata -> type: "original" (original header)
 // Header annotation types: freetext, label (list with values)
 type AnnotationField = {
   field: string;
@@ -30,17 +31,28 @@ export default defineComponent({
   },
   setup(props) {
     const router = useRouter();
-    const datasetService = inject<DatasetService>('datasetService');
+    const datasetService = inject<DatasetService<string>>('datasetService');
 
+    // Dataset info
     var dataset: Dataset = {
         id: '',
         name: '',
         authors: '',
         header: [],
         annotation_header: [],
+        total_items: 0,
         content: []
     };
+    
+    // Dataset rows selection
+    const selectedRows = ref([]);
+    const isCheckboxSelected = ref(false);
 
+    // Pagination logic
+    const itemsPerPage = 10;
+    const currentPage = ref(1);
+
+    // Annotations
     var annotations: AnnotationField[] = [];
     const fieldName1 = ref("");
     const isFreetext1 = ref(false);
@@ -50,16 +62,14 @@ export default defineComponent({
     const isFreetext2 = ref(false);
     const isLabel2 = ref(false);
     const labelsList2 = ref([]);
-
-    const selectedRows = ref([]);
-    const isCheckboxSelected = ref(false);
     const isModalOpen = ref(false);
+    const showDangerAlert = ref(false);
 
     const generateCSV = () => {
         console.log('ID:', props.id);
         const labels: string[] = ['NO HATE', 'HATE'];
         const texts: string[] = ['Lorem ipsum dolor sit amet', 'Consectetur adipiscing elit', 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', /* Add more random texts as needed */];
-        const numSamples: number = 26;
+        const numSamples: number = 26000;
   
         const pairs = [];
 
@@ -74,6 +84,7 @@ export default defineComponent({
         dataset.authors = 'Piot et al. 2024'
         dataset.content = pairs;
         dataset.header = ['id', 'label', 'text'];
+        dataset.total_items = numSamples;
     };
 
     const getExistingAnnotations = () => {
@@ -84,6 +95,7 @@ export default defineComponent({
 
     onBeforeMount(() => {
         generateCSV();
+        //dataset = datasetService.getDataset(props.id, itemsPerPage, currentPage);
         getExistingAnnotations();
     });
 
@@ -95,15 +107,13 @@ export default defineComponent({
       }
     };
 
-    watch(isLabel1, (newValue, oldValue) => {
-      console.log(newValue);
-    });
+    const closeModal = () => {
+      isModalOpen.value = false;
+    };
 
-    watch(isLabel2, (newValue, oldValue) => {
-      console.log(newValue);
-    });
-
+    // Create new annotation
     const newAnnotation = () => {
+      // TODO: implement
       console.log(fieldName1.value);
       console.log(isFreetext1.value === true);
       console.log(labelsList1.value);
@@ -114,8 +124,23 @@ export default defineComponent({
       router.push(`/dataset/annotation/${props.id}`);
     };
 
-    const closeModal = () => {
-      isModalOpen.value = false;
+    const dismissAlert = () => {
+      showDangerAlert.value = false;
+    };
+
+    // Export dataset (of selected rows)
+    const selectAllRows = (e) => {
+      //  TODO: if there is a query, select all will only select the rows that fulfill the query requirements
+      const isChecked = e.target.checked;
+      if (isChecked) {
+        dataset.content.forEach(function (row) {
+          selectedRows.value[row.id] = true;
+        });
+      } else {
+        dataset.content.forEach(function (row) {
+          selectedRows.value[row.id] = false;
+        });
+      }
     };
 
     const exportDataset = () => {
@@ -139,34 +164,62 @@ export default defineComponent({
         a.href = url;
         a.download = "data.tsv";
         a.click();
+      } else {
+        showDangerAlert.value = true;
+        setTimeout(dismissAlert, 5000);
       }
     };
 
-    const selectAllRows = (e) => {
-        //  TODO: if there is a query, select all will only select the rows that fulfill the query requirements
-        const isChecked = e.target.checked;
-        if (isChecked) {
-          dataset.content.forEach(function (row) {
-            selectedRows.value[row.id] = true;
-          });
-        } else {
-          dataset.content.forEach(function (row) {
-            selectedRows.value[row.id] = false;
-          });
-        }
-    };
-
-    // Pagination logic
-    const itemsPerPage = 5;
-    const currentPage = ref(1);
-
+    // Pagination
     const paginatedData = computed(() => {
+        // TODO: when implemented, paginatedData will be directly dataset.content
         const startIndex = (currentPage.value - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         return dataset.content.slice(startIndex, endIndex);
     });
 
-    const totalPages = computed(() => Math.ceil(dataset.content.length / itemsPerPage));
+    const pagesToDisplay = computed(() => {
+      const pages = [];
+    
+      if (totalPages.value <= 10) {
+        for (let i = 1; i <= totalPages.value; i++) {
+          pages.push(i);
+        }
+      } else {
+        // First 3 pages
+        pages.push(1, 2, 3);
+    
+        // Previous and next of the current page
+        if (currentPage.value > 4) {
+          pages.push('...');
+        }
+
+        // Push the previous page if not already included
+        if (!pages.includes(currentPage.value - 1) && currentPage.value < totalPages.value - 2 && currentPage.value > 3) {
+          pages.push(currentPage.value - 1);
+        }
+
+        if (currentPage.value > 3 && currentPage.value < totalPages.value - 2) {
+          pages.push(currentPage.value);
+        }
+    
+        // Push the next page if not already included
+        if (!pages.includes(currentPage.value + 1) && currentPage.value < totalPages.value - 2 && currentPage.value < totalPages.value - 3) {
+          pages.push(currentPage.value + 1);
+        }
+
+        // Last 3 pages
+        if (currentPage.value < totalPages.value - 3) {
+          pages.push('...');
+        }
+        pages.push(totalPages.value - 2, totalPages.value - 1, totalPages.value);
+
+      }
+    
+      return pages;
+    });    
+
+    const totalPages = computed(() => Math.ceil(dataset.total_items / itemsPerPage));
 
     const prevPage = () => {
     if (currentPage.value > 1) {
@@ -179,8 +232,15 @@ export default defineComponent({
     }};
 
     const gotoPage = (pageNumber: any) => {
+      if (pageNumber != '...') {
         currentPage.value = pageNumber;
+      }
     };
+
+    watch(currentPage, (newValue, oldValue) => {
+      // TODO: When currentPage changes --> fetch new dataset content
+      //dataset = datasetService.getDataset(props.id, itemsPerPage, currentPage.value);
+    });
 
     return {
       dataset,
@@ -189,6 +249,7 @@ export default defineComponent({
       selectAllRows,
       isCheckboxSelected,
       paginatedData,
+      pagesToDisplay,
       totalPages,
       prevPage,
       nextPage,
@@ -207,6 +268,8 @@ export default defineComponent({
       isFreetext2,
       isLabel2,
       labelsList2,
+      showDangerAlert,
+      dismissAlert,
       t$: useI18n().t,
     };
   },

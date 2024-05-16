@@ -1,4 +1,10 @@
 <template>
+
+    <div v-if="showDangerAlert" class="alert alert-dismissible alert-danger">
+        <button type="button" class="btn-close" @click="dismissAlert">X</button>
+        <strong>Error!</strong> No rows selected for export. Please <a class="alert-link">select rows</a> to proceed.
+    </div>
+
     <div class="row">
         <div class="col-md-9">
             <h3 v-if="dataset">
@@ -60,7 +66,7 @@
                     <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
                         <a class="page-link" href="#" @click="prevPage" v-text="t$('dataset.previous')"></a>
                     </li>
-                    <li class="page-item" v-for="pageNumber in totalPages" :key="pageNumber" :class="{ 'active': pageNumber === currentPage }">
+                    <li class="page-item" v-for="pageNumber in pagesToDisplay" :key="pageNumber" :class="{ 'active': pageNumber === currentPage, 'disabled': pageNumber === '...' }">
                         <a class="page-link" href="#" @click="gotoPage(pageNumber)">{{ pageNumber }}</a>
                     </li>
                     <li class="page-item" :class="{ 'disabled' : currentPage === totalPages }">
@@ -155,3 +161,38 @@
 </template>
 
 <script lang="ts" src="./dataset.component.ts"></script>
+<style>
+.btn-close {
+    --bs-btn-close-color: #000;
+    --bs-btn-close-opacity: 0.5;
+    --bs-btn-close-hover-opacity: 0.75;
+    --bs-btn-close-focus-shadow: 0 0 0 0.25rem rgba(26, 26, 26, 0.25);
+    --bs-btn-close-focus-opacity: 1;
+    --bs-btn-close-disabled-opacity: 0.25;
+    --bs-btn-close-white-filter: invert(1) grayscale(100%) brightness(200%);
+    box-sizing: content-box;
+    width: 1em;
+    height: 1em;
+    padding: 0.25em 0.25em;
+    color: var(--bs-btn-close-color);
+    background: transparent var(--bs-btn-close-bg) center / 1em auto no-repeat;
+    border: 0;
+    opacity: var(--bs-btn-close-opacity);
+}
+.alert-dismissible .btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    padding: 0.75rem 0.75rem;
+}
+strong {
+    font-weight: bolder;
+}
+.alert-link {
+    font-weight: 600;
+    color: var(--bs-alert-link-color);
+    text-decoration: underline;
+    pointer-events: none;
+}
+</style>

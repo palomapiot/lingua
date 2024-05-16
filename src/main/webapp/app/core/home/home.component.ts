@@ -1,32 +1,44 @@
-import { type ComputedRef, defineComponent, inject, ref, computed } from 'vue';
+import { defineComponent, inject, ref, computed, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import DatasetService from '@/dataset/dataset.service';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
   setup() {
     const router = useRouter();
-    const authenticated = inject<ComputedRef<boolean>>('authenticated');
-    const username = inject<ComputedRef<string>>('currentUsername');
+    const datasetService = inject<DatasetService<string>>('datasetService');
 
-    const datasets = [
-      { id: 1, name: 'Offensive 2017', authors: '' },
-      { id: 2, name: 'HASOC 2019', authors: '' },
-      { id: 3, name: 'MetaHate 2024', authors: '' },
-      { id: 4, name: 'HATEVAL 2022', authors: '' },
-      { id: 5, name: 'Davidson 2017', authors: '' },
-      { id: 6, name: 'Call me sexist but', authors: '' },
-    ]
+    // Overview
+    const datasets = ref([]);
+
+    // Modal
     const isModalOpen = ref(false);
+
+    // Modal data
     const datasetNameEmpty = ref(false);
     const datasetAuthorsEmpty = ref(false);
     const datasetEmpty = ref(false);
     let selectedDataset = "";
 
+    onBeforeMount(async () => {
+      //datasets.value = datasetService.getDatasetsOverview();
+      datasets.value = [
+        { id: 1, name: 'Offensive 2017', authors: '' },
+        { id: 2, name: 'HASOC 2019', authors: '' },
+        { id: 3, name: 'MetaHate 2024', authors: '' },
+        { id: 4, name: 'HATEVAL 2022', authors: '' },
+        { id: 5, name: 'Davidson 2017', authors: '' },
+        { id: 6, name: 'Call me sexist but', authors: '' },
+      ];
+    });
+
+    // Dataset detail
     const openDataset = (id) => {
       router.push(`/dataset/${id}`);
     };
     
+    // Modal
     const openModal = () => {
       isModalOpen.value = true;
     };
@@ -43,12 +55,12 @@ export default defineComponent({
       isModalOpen.value = false;
     };
 
-    const sendFile = (e) => {
+    const pickFile = (e) => {
       console.log(e.target.files);
       selectedDataset = e.target.files;
     };
 
-    const uploadDataset = () => {
+    const uploadDataset = async () => {
       datasetNameEmpty.value = false;
       datasetAuthorsEmpty.value = false;
       datasetEmpty.value = false;
@@ -64,29 +76,24 @@ export default defineComponent({
       if (selectedDataset == "") {
         datasetEmpty.value = true;
       }
-  
-      console.log("Dataset Name:", datasetName);
-      console.log("Dataset Authors:", datasetAuthors);
-      console.log(selectedDataset);
         
       if (datasetName != "" && datasetAuthors != "" && selectedDataset != "") {
+        await datasetService.createDataset(datasetName, datasetAuthors, selectedDataset[0]);
+        datasets.value = datasetService.getDatasetsOverview();
         closeModal();
       }
-
     };
 
     return {
-      authenticated,
-      username,
       datasets,
+      openDataset,
       datasetNameEmpty: computed(() => datasetNameEmpty.value),
       datasetAuthorsEmpty: computed(() => datasetAuthorsEmpty.value),
       datasetEmpty: computed(() => datasetEmpty.value),
       isModalOpen: computed(() => isModalOpen.value),
-      openDataset,
       openModal,
       closeModal,
-      sendFile,
+      pickFile,
       uploadDataset,
       t$: useI18n().t,
     };

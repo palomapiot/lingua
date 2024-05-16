@@ -20,6 +20,7 @@ export default defineComponent({
         authors: '',
         header: [],
         annotation_header: [],
+        total_items: 0,
         content: []
     };
     const textareaRef = ref(null);
@@ -36,6 +37,7 @@ export default defineComponent({
 
 
     const saveAnnotation = () => {
+      // TODO: implement
       console.log('save annotation');
       console.log(annotationFreetext.value);
       console.log(annotationLabel.value);
@@ -55,26 +57,28 @@ export default defineComponent({
     };
 
     const generateCSV = () => {
-        console.log('ID:', props.id);
-        const labels: string[] = ['NO HATE', 'HATE'];
-        const texts: string[] = ['Lorem ipsum dolor sit amet', 'Consectetur adipiscing elit', 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', /* Add more random texts as needed */];
-        const numSamples: number = 26;
-  
-        const pairs = [];
+      // TODO: load existing dataset, pagination if 1 element per page
+      console.log('ID:', props.id);
+      const labels: string[] = ['NO HATE', 'HATE'];
+      const texts: string[] = ['Lorem ipsum dolor sit amet', 'Consectetur adipiscing elit', 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', /* Add more random texts as needed */];
+      const numSamples: number = 26;
 
-        for (let i: number = 0; i < numSamples; i++) {
-            const randomLabel = labels[Math.floor(Math.random() * labels.length)];
-            const randomText = texts[Math.floor(Math.random() * texts.length)];
-            pairs.push({ id: i, label: randomLabel, text: randomText });
-        }
-  
-        dataset.id = '3';
-        dataset.name = 'MetaHate 2024'
-        dataset.authors = 'Piot et al. 2024'
-        dataset.content = pairs;
-        dataset.header = [{'id': 'id'}, {'label': ['HATE', 'NO HATE']}, {'text': 'text'}];
-        dataset.annotation_header = [{'explanation': 'freetext'}, {'is hate': ['HATE', 'NO HATE']}];
-        //dataset.header = ['id', 'label', 'text'];
+      const pairs = [];
+
+      for (let i: number = 0; i < numSamples; i++) {
+          const randomLabel = labels[Math.floor(Math.random() * labels.length)];
+          const randomText = texts[Math.floor(Math.random() * texts.length)];
+          pairs.push({ id: i, label: randomLabel, text: randomText });
+      }
+
+      dataset.id = '3';
+      dataset.name = 'MetaHate 2024'
+      dataset.authors = 'Piot et al. 2024'
+      dataset.content = pairs;
+      dataset.header = [{'id': 'id'}, {'label': ['HATE', 'NO HATE']}, {'text': 'text'}];
+      dataset.annotation_header = [{'explanation': 'freetext'}, {'is hate': ['HATE', 'NO HATE']}];
+      dataset.total_items = numSamples;
+      //dataset.header = ['id', 'label', 'text'];
     };
 
     onBeforeMount(() => {
@@ -86,8 +90,7 @@ export default defineComponent({
     });
     // Iteration
     const currentRow = ref(1);
-
-    const totalRows = computed(() => dataset.content.length);
+    const totalRows = computed(() => dataset.total_items);
 
     const prevRow = () => {
     if (currentRow.value > 1) {

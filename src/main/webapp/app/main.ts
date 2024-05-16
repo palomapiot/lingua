@@ -12,6 +12,7 @@ import JhiItemCountComponent from './shared/jhi-item-count.vue';
 import JhiSortIndicatorComponent from './shared/sort/jhi-sort-indicator.vue';
 import LoginService from './account/login.service';
 import AccountService from './account/account.service';
+import DatasetService from './dataset/dataset.service';
 import { setupAxiosInterceptors } from '@/shared/config/axios-interceptor';
 import { useStore, useTranslationStore } from '@/store';
 
@@ -68,6 +69,7 @@ const app = createApp({
     const i18n = useI18n();
     const translationStore = useTranslationStore();
     const translationService = new TranslationService(i18n);
+    const datasetService = new DatasetService();
 
     const changeLanguage = async (newLanguage: string) => {
       if (i18n.locale.value !== newLanguage) {
@@ -150,6 +152,7 @@ const app = createApp({
 
     provide('translationService', translationService);
     provide('accountService', accountService);
+    provide('datasetService', datasetService);
     // jhipster-needle-add-entity-service-to-main - JHipster will import entities services here
   },
 });

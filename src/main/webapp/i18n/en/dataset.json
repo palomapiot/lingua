@@ -3,8 +3,8 @@
         "annotation-mode": "Annotation Mode",
         "inspect-mode": "Inspect Mode",
         "export-dataset": "Export Dataset",
-        "previous": "Previous",
-        "next": "Next",
+        "previous": "< Previous",
+        "next": "Next >",
         "filter": "Filter",
         "save": "Save"
     }
