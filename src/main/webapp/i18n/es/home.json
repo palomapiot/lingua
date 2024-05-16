@@ -29,6 +29,7 @@
     "new-annotation": "Nueva anotación",
     "type": "Tipo: ",
     "text": "Texto",
-    "label": "Etiqueta"
+    "label": "Etiqueta",
+    "labels": "Etiquetas, separadas por comas"
   }
 }

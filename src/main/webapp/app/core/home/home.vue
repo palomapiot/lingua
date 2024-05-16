@@ -13,7 +13,7 @@
             <div class="card-header">{{ dataset.name }}</div>
             <div class="card-body">
               <h4 class="card-title">{{ dataset.name }}</h4>
-              <a :href="'/dataset/' + dataset.id" class="card-link" v-text="t$('home.open-dataset')"></a>
+              <button @click="openDataset(dataset.id)" type="button" class="btn btn-link" v-text="t$('home.open-dataset')" style="padding: 0px;"></button>
             </div>
           </div>
         </div>

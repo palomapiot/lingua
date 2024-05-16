@@ -29,6 +29,7 @@
     "new-annotation": "New annotation",
     "type": "Type: ",
     "text": "Text",
-    "label": "Label"
+    "label": "Label",
+    "labels": "Labels, separeded by commas"
   }
 }

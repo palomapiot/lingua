@@ -85,11 +85,12 @@
                 <fieldset>
                     <div>
                         <label for="fieldName1" class="form-label mt-4" v-text="t$('home.field-name')"></label>
-                        <input type="text" class="form-control" id="fieldName1" aria-describedby="fieldName1" v-bind:placeholder="t$('home.field-name')" required>
+                        <input type="text" class="form-control" id="fieldName1" aria-describedby="fieldName1" v-model="fieldName1" v-bind:placeholder="t$('home.field-name')" required>
                         <div class="d-flex" style="margin-top: 1em;">
                             <p v-text="t$('home.type')"></p>
                             <div class="form-check" style="margin-left: 1em;">
                                 <input
+                                    v-model="isFreetext1"
                                     class="form-check-input"
                                     type="checkbox"
                                     id="checkboxFreetext1"
@@ -99,6 +100,7 @@
                             </div>
                             <div class="form-check" style="margin-left: 1em;">
                                 <input
+                                    v-model="isLabel1"
                                     class="form-check-input"
                                     type="checkbox"
                                     id="checkboxLabel1"
@@ -107,14 +109,17 @@
                                 <label class="form-check-label" for="checkboxLabel1" v-text="t$('home.label')"></label>
                             </div>
                         </div>
+                        <label v-show="isLabel1" for="labelsList1" class="form-label mt-4" v-text="t$('home.labels')"></label>
+                        <input v-show="isLabel1" type="text" class="form-control" id="labelsList1" aria-describedby="labelsList1" v-model="labelsList1" v-bind:placeholder="t$('home.labels')" required>
                     </div>
                     <div>
                         <label for="fieldName2" class="form-label mt-4" v-text="t$('home.field-name')"></label>
-                        <input type="text" class="form-control" id="fieldName2" aria-describedby="fieldName2" v-bind:placeholder="t$('home.field-name')" required>
+                        <input type="text" class="form-control" id="fieldName2" aria-describedby="fieldName2" v-model="fieldName2" v-bind:placeholder="t$('home.field-name')" required>
                         <div class="d-flex" style="margin-top: 1em;">
                             <p v-text="t$('home.type')"></p>
                             <div class="form-check" style="margin-left: 1em;">
                                 <input
+                                    v-model="isFreetext2"
                                     class="form-check-input"
                                     type="checkbox"
                                     id="checkboxFreetext2"
@@ -124,6 +129,7 @@
                             </div>
                             <div class="form-check" style="margin-left: 1em;">
                                 <input
+                                    v-model="isLabel2"
                                     class="form-check-input"
                                     type="checkbox"
                                     id="checkboxLabel2"
@@ -132,12 +138,14 @@
                                 <label class="form-check-label" for="checkboxLabel2" v-text="t$('home.label')"></label>
                             </div>
                         </div>
+                        <label v-show="isLabel2" for="labelsList2" class="form-label mt-4" v-text="t$('home.labels')"></label>
+                        <input v-show="isLabel2" type="text" class="form-control" id="labelsList2" aria-describedby="labelsList2" v-model="labelsList2" v-bind:placeholder="t$('home.labels')" required>
                     </div>
                 </fieldset>
                 </form>
             </div>
             <div class="modal-footer">
-                <a type="button" class="btn btn-primary" :href="'/dataset/annotation/' + dataset.id"  style="display: inline-block;" v-text="t$('dataset.annotation-mode')"></a>
+                <button type="button" class="btn btn-primary" @click="newAnnotation" style="display: inline-block;" v-text="t$('dataset.annotation-mode')"></button>
                 <button type="button" class="btn btn-secondary" @click="closeModal" v-text="t$('home.close')"></button>
             </div>
             </div>

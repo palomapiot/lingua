@@ -1,7 +1,8 @@
-import { defineComponent, ref, inject, computed } from 'vue';
+import { defineComponent, ref, inject, computed, watch } from 'vue';
 import type DatasetService from '@/dataset/dataset.service';
 import { useI18n } from 'vue-i18n';
 import { onBeforeMount } from 'vue';
+import { useRouter } from 'vue-router';
 
 type Dataset = {
     id: string;
@@ -12,7 +13,12 @@ type Dataset = {
     content: {}[];
 };
 // Header types: id, label, text, metadata
-// Header annotation types: freetext, options (list with values)
+// Header annotation types: freetext, label (list with values)
+type AnnotationField = {
+  field: string;
+  type: any;
+}
+
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -23,6 +29,7 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const router = useRouter();
     const datasetService = inject<DatasetService>('datasetService');
 
     var dataset: Dataset = {
@@ -34,7 +41,15 @@ export default defineComponent({
         content: []
     };
 
-    const annotations = [];
+    var annotations: AnnotationField[] = [];
+    const fieldName1 = ref("");
+    const isFreetext1 = ref(false);
+    const isLabel1 = ref(false);
+    const labelsList1 = ref([]);
+    const fieldName2 = ref("");
+    const isFreetext2 = ref(false);
+    const isLabel2 = ref(false);
+    const labelsList2 = ref([]);
 
     const selectedRows = ref([]);
     const isCheckboxSelected = ref(false);
@@ -61,12 +76,42 @@ export default defineComponent({
         dataset.header = ['id', 'label', 'text'];
     };
 
+    const getExistingAnnotations = () => {
+      console.log('get existing annotations for dataset id:', props.id);
+      //annotations = [{field: "explanation", type: "freetext"}, {field: "is hate", type: ["HATE", "NO HATE"]}];
+      console.log(annotations);
+    };
+
     onBeforeMount(() => {
         generateCSV();
+        getExistingAnnotations();
     });
 
     const openModal = () => {
-      isModalOpen.value = true;
+      if (annotations.length === 0) {
+        isModalOpen.value = true;
+      } else {
+        router.push(`/dataset/annotation/${props.id}`);
+      }
+    };
+
+    watch(isLabel1, (newValue, oldValue) => {
+      console.log(newValue);
+    });
+
+    watch(isLabel2, (newValue, oldValue) => {
+      console.log(newValue);
+    });
+
+    const newAnnotation = () => {
+      console.log(fieldName1.value);
+      console.log(isFreetext1.value === true);
+      console.log(labelsList1.value);
+      console.log(fieldName2.value);
+      console.log(isFreetext2.value === true);
+      console.log(labelsList2.value);
+      isModalOpen.value = false;
+      router.push(`/dataset/annotation/${props.id}`);
     };
 
     const closeModal = () => {
@@ -152,7 +197,16 @@ export default defineComponent({
       isModalOpen,
       openModal,
       closeModal,
+      newAnnotation,
       annotations,
+      fieldName1,
+      isFreetext1,
+      isLabel1,
+      labelsList1,
+      fieldName2,
+      isFreetext2,
+      isLabel2,
+      labelsList2,
       t$: useI18n().t,
     };
   },

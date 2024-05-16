@@ -1,9 +1,11 @@
 import { type ComputedRef, defineComponent, inject, ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
   setup() {
+    const router = useRouter();
     const authenticated = inject<ComputedRef<boolean>>('authenticated');
     const username = inject<ComputedRef<string>>('currentUsername');
 
@@ -21,6 +23,10 @@ export default defineComponent({
     const datasetEmpty = ref(false);
     let selectedDataset = "";
 
+    const openDataset = (id) => {
+      router.push(`/dataset/${id}`);
+    };
+    
     const openModal = () => {
       isModalOpen.value = true;
     };
@@ -77,6 +83,7 @@ export default defineComponent({
       datasetAuthorsEmpty: computed(() => datasetAuthorsEmpty.value),
       datasetEmpty: computed(() => datasetEmpty.value),
       isModalOpen: computed(() => isModalOpen.value),
+      openDataset,
       openModal,
       closeModal,
       sendFile,

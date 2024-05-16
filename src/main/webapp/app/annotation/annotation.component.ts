@@ -2,6 +2,7 @@ import { defineComponent, ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeMount, onMounted, nextTick } from 'vue';
 import Dataset from '@/dataset/dataset.component';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },
@@ -12,6 +13,7 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const router = useRouter();
     var dataset: Dataset = {
         id: '',
         name: '',
@@ -46,6 +48,10 @@ export default defineComponent({
 
     const dismissAlert = () => {
       showSuccessAlert.value = false;
+    };
+
+    const inspectMode = () => {
+      router.push(`/dataset/${props.id}`);
     };
 
     const generateCSV = () => {
@@ -106,6 +112,7 @@ export default defineComponent({
       annotationFreetext,
       annotationLabel,
       saveAnnotation,
+      inspectMode,
       showSuccessAlert,
       dismissAlert,
       currentRow,

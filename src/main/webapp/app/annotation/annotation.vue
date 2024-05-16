@@ -18,7 +18,7 @@
                     <button type="button" class="btn btn-success" v-on:click="saveAnnotation" style="float: right; margin-left: 1em" v-text="t$('dataset.save')"></button>   
                 </div>
                 <div>
-                    <a type="button" class="btn btn-outline-info" :href="'/dataset/' + dataset.id" v-text="t$('dataset.inspect-mode')" style="float: right;"></a> 
+                    <a type="button" class="btn btn-outline-info" @click="inspectMode" v-text="t$('dataset.inspect-mode')" style="float: right;"></a> 
                 </div>
             </div>
         </div>
