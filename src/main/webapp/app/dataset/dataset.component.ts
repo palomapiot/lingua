@@ -208,6 +208,11 @@ export default defineComponent({
           pages.push(currentPage.value + 1);
         }
 
+        // Show the previous if we are in the element N-2
+        if (currentPage.value == totalPages.value - 2) {
+          pages.push(currentPage.value - 1);
+        }
+
         // Last 3 pages
         if (currentPage.value < totalPages.value - 3) {
           pages.push('...');
