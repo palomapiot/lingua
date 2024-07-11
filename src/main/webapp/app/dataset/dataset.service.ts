@@ -56,9 +56,15 @@ export default class DatasetService {
   }
 
   public async createAnnotation(id: any, field1: {}, field2: {}): Promise<any> {
-    console.log(field1);
-    console.log(field2);
     return await axios.post(`api/datasets/${id}/fields`, [field1, field2]);
+  }
+
+  public async updateRow(id: any, row: any, content: {}): Promise<any> {
+    return await axios.put(`api/datasets/${id}/records/${row}`, content)
+    .then(response => response.data)
+    .catch((err) => {
+      console.log('Error updating row.');
+    });
   }
 
 }

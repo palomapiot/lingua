@@ -31,10 +31,16 @@ export default defineComponent({
 
 
     const saveAnnotation = () => {
-      // TODO: implement
-      console.log('save annotation');
-      console.log(annotationFreetext.value);
-      console.log(annotationLabel.value);
+      var content = {}
+      for (const id in dataset.value.annotation_header) {
+        const field = dataset.value.annotation_header[id];
+        if (field.options !== 'freetext') {
+          content[field.name] = annotationLabel.value;
+        } else {
+          content[field.name] = annotationFreetext.value;
+        }
+      }
+      datasetService.updateRow(props.id, currentRow.value, content);
       showSuccessAlert.value = true;
       setTimeout(dismissAlert, 3000);
       annotationFreetext.value = null;
@@ -66,8 +72,18 @@ export default defineComponent({
           dataset.value.id = data.data.id;
           dataset.value.name = data.data.name;
           dataset.value.authors = data.data.authors;
-          dataset.value.content = data.data.content; //sortContent(data.data.content, dataset.value.header);
+          dataset.value.content = data.data.content;
           dataset.value.total_items = data.data.total_items;
+
+          // If row has annotation value, add it
+          for (const id in dataset.value.annotation_header) {
+            const field = dataset.value.annotation_header[id];
+            if (field.options !== 'freetext') {
+              annotationLabel.value = dataset.value.content[0][field.name];
+            } else {
+              annotationFreetext.value = dataset.value.content[0][field.name];
+            }
+          }
         });
       });
     };
@@ -105,8 +121,17 @@ export default defineComponent({
           dataset.value.id = data.data.id;
           dataset.value.name = data.data.name;
           dataset.value.authors = data.data.authors;
-          dataset.value.content = data.data.content; //sortContent(data.data.content, dataset.value.header);
+          dataset.value.content = data.data.content; 
           dataset.value.total_items = data.data.total_items;
+          // If row has annotation value, add it
+          for (const id in dataset.value.annotation_header) {
+            const field = dataset.value.annotation_header[id];
+            if (field.options !== 'freetext') {
+              annotationLabel.value = dataset.value.content[0][field.name];
+            } else {
+              annotationFreetext.value = dataset.value.content[0][field.name];
+            }
+          }
         });
       });
     }};
@@ -128,8 +153,17 @@ export default defineComponent({
           dataset.value.id = data.data.id;
           dataset.value.name = data.data.name;
           dataset.value.authors = data.data.authors;
-          dataset.value.content = data.data.content; //sortContent(data.data.content, dataset.value.header);
+          dataset.value.content = data.data.content; 
           dataset.value.total_items = data.data.total_items;
+          // If row has annotation value, add it
+          for (const id in dataset.value.annotation_header) {
+            const field = dataset.value.annotation_header[id];
+            if (field.options !== 'freetext') {
+              annotationLabel.value = dataset.value.content[0][field.name];
+            } else {
+              annotationFreetext.value = dataset.value.content[0][field.name];
+            }
+          }
         });
       });
       textareaRef.value[0].focus();

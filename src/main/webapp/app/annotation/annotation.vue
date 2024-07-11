@@ -36,7 +36,6 @@
             <div class="card mb-3"  v-for="k in dataset.annotation_header">
                 <div class="card-body">
                     <h5 class="card-title">{{ k.name }}</h5>
-                    <!-- TODO: FIX "k" contains the field name, send also options if so to represent it-->
                     <div v-if="k.options == 'freetext'">
                         <textarea ref="textareaRef" class="form-control" id="annotationFreetext" rows="4" v-model="annotationFreetext"></textarea>
                     </div>
