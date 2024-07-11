@@ -1,0 +1,36 @@
+{
+  "home": {
+    "title": "¡Bienvenido, Java Hipster!",
+    "subtitle": "Esta es su página de inicio",
+    "logged": {
+      "message": "Está conectado como \"{ username }\"."
+    },
+    "question": "Si tiene preguntas sobre JHipster:",
+    "link": {
+      "homepage": "Página de inicio de JHipster",
+      "stackoverflow": "JHipster en Stack Overflow",
+      "bugtracker": "JHipster seguimiento de errores",
+      "chat": "Sala de chat pública de JHipster",
+      "follow": "contacto {'@'}jhipster en Twitter"
+    },
+    "like": "Si te gusta JHipster, danos una estrella en",
+    "github": "GitHub",
+    "upload-dataset": "Cargar datos",
+    "open-dataset": "Abrir conjunto de datos",
+    "dataset-name": "Nombre del conjunto de datos",
+    "dataset-huggingface": "Hugging Face Dataset",
+    "dataset-authors": "Autores del conjunto de datos",
+    "dataset-file": "Fichero",
+    "upload": "Subir",
+    "close": "Cerrar",
+    "error-no-dataset-name": "El nombre del conjunto de datos es obligatorio.",
+    "error-no-dataset-authors": "Los autores del conjunto de datos es obligatorio.",
+    "error-no-dataset-file": "El fichero es obligatorio.",
+    "field-name": "Nombre del campo",
+    "new-annotation": "Nueva anotación",
+    "type": "Tipo: ",
+    "text": "Texto",
+    "label": "Etiqueta",
+    "labels": "Etiquetas, separadas por comas"
+  }
+}

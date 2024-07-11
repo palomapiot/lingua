@@ -1,0 +1,36 @@
+{
+  "home": {
+    "title": "Welcome, Java Hipster!",
+    "subtitle": "This is your homepage",
+    "logged": {
+      "message": "You are logged in as user \"{ username }\"."
+    },
+    "question": "If you have any question on JHipster:",
+    "link": {
+      "homepage": "JHipster homepage",
+      "stackoverflow": "JHipster on Stack Overflow",
+      "bugtracker": "JHipster bug tracker",
+      "chat": "JHipster public chat room",
+      "follow": "follow {'@'}jhipster on Twitter"
+    },
+    "like": "If you like JHipster, don't forget to give us a star on",
+    "github": "GitHub",
+    "upload-dataset": "Upload Dataset",
+    "open-dataset": "Open dataset",
+    "dataset-name": "Dataset Name",
+    "dataset-huggingface": "Hugging Face Dataset",
+    "dataset-authors": "Dataset Authors",
+    "dataset-file": "File",
+    "upload": "Upload",
+    "close": "Close",
+    "error-no-dataset-name": "Dataset name is required.",
+    "error-no-dataset-authors": "Dataset authors is required.",
+    "error-no-dataset-file": "Dataset file is required.",
+    "field-name": "Field name",
+    "new-annotation": "New annotation",
+    "type": "Type: ",
+    "text": "Text",
+    "label": "Label",
+    "labels": "Labels, separeded by commas"
+  }
+}
