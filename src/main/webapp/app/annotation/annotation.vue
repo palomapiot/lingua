@@ -27,31 +27,41 @@
             <div v-for="k in dataset.header">
                 <div class="card mb-3">
                     <div class="card-body">
-                        <!--<h5 class="card-title">{{ Object.keys(k)[0] }}</h5>-->
                         <h5 class="card-title">{{ k }}</h5>
-                        <h6 class="card-subtitle text-muted">{{ getLabelById(dataset.content[0], k) }}</h6>
+                        <!-- Represent explanations that are a list of objects -->
+                        <div v-if="isArrayOfObjects(getLabelById(dataset.content[0], k))[0]">
+                            <ol>
+                                <li v-for="(item, index) in isArrayOfObjects(getLabelById(dataset.content[0], k))[1]" :key="index">
+                                    <p class="lead text-muted"><p class="text-info">{{ item.input }}:</p> {{ item.explanation }}</p>
+                                </li>
+                            </ol>
+                        </div>
+                        <p v-else class="card-subtitle text-muted lead">{{ getLabelById(dataset.content[0], k) }}</p>
                     </div>
                 </div>
             </div>
-            <div class="card mb-3"  v-for="k in dataset.annotation_header">
+            <div class="card mb-3"  v-for="(k, index) in dataset.annotation_header">
                 <div class="card-body">
                     <h5 class="card-title">{{ k.name }}</h5>
                     <div v-if="k.options == 'freetext'">
-                        <textarea ref="textareaRef" class="form-control" id="annotationFreetext" rows="4" v-model="annotationFreetext"></textarea>
+                        <textarea ref="textareaRef" class="form-control" :id="'annotationFreetext'+(index+1)" rows="4"                        @change="updateFreetext(index, $event.target.value)" 
+                        :value="getFreetext(index)"></textarea>
                     </div>
                     <div class="bs-component mb-6" v-if="k.options !== 'freetext'">
-                        <div class="btn-group" role="group" id="annotationLabel" aria-label="">
+                        <div class="btn-group" role="group" :id="'annotationLabel' + (index + 1)"
+                        aria-label="">
                             <div v-for="ah_value in k.options">
                             <input 
                                 type="radio"
                                 class="btn-check"
-                                name="annotationLabel"
+                                :name="'annotationLabel' + (index + 1)"
                                 :value="ah_value"
-                                :id="ah_value"
+                                :id="'radio' + index + ah_value"
                                 autocomplete="off"
-                                v-model="annotationLabel">
+                                :checked="index === 0 ? annotationLabel1 === ah_value : annotationLabel2 === ah_value"
+                                @change="updateLabel(index, ah_value)">
                             </input>
-                            <label class="btn btn-outline-primary" :for="ah_value">{{ ah_value }}</label>
+                            <label class="btn btn-outline-primary" :for="'radio' + index + ah_value">{{ ah_value }}</label>
                             </div>
                         </div>
                     </div>

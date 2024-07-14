@@ -23,20 +23,6 @@ export default class DatasetService {
     });
   }
 
-  public async createHuggingFaceDataset(datasetName: string, apiKey: string): Promise<any> {
-    const qparams = {
-      params: {name: datasetName}
-    }
-    await axios.get<any>(`api/hf`, qparams)
-      .then((response) => {
-        console.log('Request URL:', response.config.url);
-        return response.data;
-    }).catch((err) => {
-      console.log('This isnt right');
-    });
-
-  }
-
   public async getDatasetsOverview(): Promise<any> {
     return axios.get('api/datasets')
       .then(response => response.data)
@@ -56,7 +42,11 @@ export default class DatasetService {
   }
 
   public async createAnnotation(id: any, field1: {}, field2: {}): Promise<any> {
-    return await axios.post(`api/datasets/${id}/fields`, [field1, field2]);
+    if (Object.keys(field2).length === 0) {
+      return await axios.post(`api/datasets/${id}/fields`, [field1]);
+    } else {
+      return await axios.post(`api/datasets/${id}/fields`, [field1, field2]);
+    }
   }
 
   public async updateRow(id: any, row: any, content: {}): Promise<any> {

@@ -115,11 +115,23 @@ export default defineComponent({
       if (typeof labelsList2.value === 'string') {
         labelsList2.value = labelsList2.value.split(',').map(item => item.trim())
       }
-      datasetService.createAnnotation(props.id, {'name': fieldName1.value, 'options': labelsList1.value}, {'name': fieldName2.value, 'options': labelsList2.value})
-      .then(() => {
-        isModalOpen.value = false;
-        router.push(`/dataset/annotation/${props.id}`);
-      });
+      if (fieldName1.value && fieldName2.value) {
+        console.log('create two fields');
+        datasetService.createAnnotation(props.id, {'name': fieldName1.value, 'options': labelsList1.value}, {'name': fieldName2.value, 'options': labelsList2.value})
+        .then(() => {
+          isModalOpen.value = false;
+          router.push(`/dataset/annotation/${props.id}`);
+        });
+      } else if (fieldName1.value) {
+        console.log('create one field');
+        datasetService.createAnnotation(props.id, {'name': fieldName1.value, 'options': labelsList1.value}, {})
+        .then(() => {
+          isModalOpen.value = false;
+          router.push(`/dataset/annotation/${props.id}`);
+        });
+      } else {
+        console.log('Error. First field empty.')
+      }
     };
 
     const dismissAlert = () => {
@@ -252,6 +264,35 @@ export default defineComponent({
       });
     });
 
+    const isObjectWithProperties = (item: any, properties: string[]): boolean => {
+      if (typeof item === 'object' && item !== null) {
+        return properties.every(prop => prop in item);
+      }
+      return false;
+    };
+
+    const isArrayOfObjects = (data: any): [boolean, any] => {
+      try {
+        data = data.replace(/'([a-zA-Z0-9_]+)':/g, '"$1":');
+        data = data.replace(/: '([^']*)'/g, (match, p1) => {
+          const escapedValue = p1.replace(/"/g, '\\"');
+          return `: "${escapedValue}"`;
+        });
+        data = JSON.parse(data);
+        if (Array.isArray(data)) {
+          if (data.every(item => isObjectWithProperties(item, ['input', 'explanation']))) {
+            return [true, data];
+          } else {
+            return [false, data];
+          }
+        } else {
+          return [false, data];
+        }
+      } catch (e) {
+        return [false, data];
+      }
+    };
+
     return {
       dataset,
       selectedRows,
@@ -279,6 +320,7 @@ export default defineComponent({
       labelsList2,
       showDangerAlert,
       dismissAlert,
+      isArrayOfObjects,
       t$: useI18n().t,
     };
   },

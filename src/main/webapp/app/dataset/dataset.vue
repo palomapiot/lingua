@@ -57,7 +57,16 @@
                                 <label class="form-check-label" for="rowSelected"></label>
                             </div>
                         </td>
-                        <td v-for="(cell, cellIndex) in row" :key="cellIndex">{{ cell }}</td>
+                        <td v-for="(cell, cellIndex) in row" :key="cellIndex">
+                            <div v-if="isArrayOfObjects(cell)[0]">
+                                <ol>
+                                    <li v-for="(item, index) in isArrayOfObjects(cell)[1]" :key="index">
+                                        <p><p class="text-info">{{ item.input }}:</p> {{ item.explanation }}</p>
+                                    </li>
+                                </ol>
+                            </div>
+                            <p v-else>{{ cell }}</p>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -147,6 +156,8 @@
                         <label v-show="isLabel2" for="labelsList2" class="form-label mt-4" v-text="t$('home.labels')"></label>
                         <input v-show="isLabel2" type="text" class="form-control" id="labelsList2" aria-describedby="labelsList2" v-model="labelsList2" v-bind:placeholder="t$('home.labels')" required>
                     </div>
+                    <!-- Annotate on sentence level if column is a list-->
+
                 </fieldset>
                 </form>
             </div>
@@ -194,5 +205,9 @@ strong {
     color: var(--bs-alert-link-color);
     text-decoration: underline;
     pointer-events: none;
+}
+table {
+    display: block;
+    overflow-x: auto;
 }
 </style>

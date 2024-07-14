@@ -16,7 +16,6 @@ export default defineComponent({
     const isModalOpen = ref(false);
 
     // Modal data
-    const datasetHuggingFaceEmpty = ref(false);
     const datasetNameEmpty = ref(false);
     const datasetAuthorsEmpty = ref(false);
     const datasetEmpty = ref(false);
@@ -65,47 +64,36 @@ export default defineComponent({
     };
 
     const uploadDataset = async () => {
-      datasetHuggingFaceEmpty.value = false;
       datasetNameEmpty.value = false;
       datasetAuthorsEmpty.value = false;
       datasetEmpty.value = false;
 
-      var datasetHuggingFace = document.getElementById('datasetHuggingFace').value;
-      if (datasetHuggingFace == "") {
-        datasetHuggingFaceEmpty.value = true;
+      var datasetName = document.getElementById('datasetName').value;
+      if (datasetName == "") {
+        datasetNameEmpty.value = true;
       }
-
-      if (datasetHuggingFace != "") {
-        // TODO: GET HUGGING FACE DATASET -- not implemented
-        let huggingFaceDataset = await datasetService.createHuggingFaceDataset(datasetHuggingFace, "");
-        console.log(huggingFaceDataset);
-        //datasets.value = datasetService.getDatasetsOverview();
+      var datasetAuthors = document.getElementById('datasetAuthors').value;
+      if (datasetAuthors == "") {
+        datasetAuthorsEmpty.value = true;
+      }
+      if (selectedDataset == "") {
+        datasetEmpty.value = true;
+      }
+        
+      if (datasetName != "" && datasetAuthors != "" && selectedDataset != "") {
+        await datasetService.createDataset(datasetName, datasetAuthors, selectedDataset[0]);
+        datasetService.getDatasetsOverview()
+        .then(data => {
+          datasets.value = data.data;
+        });
         closeModal();
-      } else {
-        var datasetName = document.getElementById('datasetName').value;
-        if (datasetName == "") {
-          datasetNameEmpty.value = true;
-        }
-        var datasetAuthors = document.getElementById('datasetAuthors').value;
-        if (datasetAuthors == "") {
-          datasetAuthorsEmpty.value = true;
-        }
-        if (selectedDataset == "") {
-          datasetEmpty.value = true;
-        }
-          
-        if (datasetHuggingFace != "" || (datasetName != "" && datasetAuthors != "" && selectedDataset != "")) {
-          await datasetService.createDataset(datasetName, datasetAuthors, selectedDataset[0]);
-          datasets.value = datasetService.getDatasetsOverview();
-          closeModal();
-        }
       }
+      
     };
 
     return {
       datasets,
       openDataset,
-      datasetHuggingFaceEmpty: computed(() => datasetHuggingFaceEmpty.value),
       datasetNameEmpty: computed(() => datasetNameEmpty.value),
       datasetAuthorsEmpty: computed(() => datasetAuthorsEmpty.value),
       datasetEmpty: computed(() => datasetEmpty.value),

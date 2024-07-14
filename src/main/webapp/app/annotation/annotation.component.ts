@@ -17,34 +17,61 @@ export default defineComponent({
     const datasetService = inject<DatasetService<string>>('datasetService');
     const dataset = ref({});
     const textareaRef = ref(null);
-    const annotationFreetext = ref(null);
-    const annotationLabel = ref(null);
+    const annotationFreetext1 = ref(null);
+    const annotationFreetext2 = ref(null);
+    const annotationLabel1 = ref(null);
+    const annotationLabel2 = ref(null);
     const showSuccessAlert = ref(false);
     const isLoaded = ref(false);
 
+    const updateLabel = (index, value) => {
+        if (index === 0) {
+          annotationLabel1.value = value;
+        } else {
+          annotationLabel2.value = value;
+        }
+    }
 
-    watch(annotationFreetext, (newValue, oldValue) => {
-    });
+    const updateFreetext = (index, value) => {
+      if (index === 0) {
+        annotationFreetext1.value = value;
+      } else {
+        annotationFreetext2.value = value;
+      }
+    }
 
-    watch(annotationLabel, (newValue, oldValue) => {
-    });
-
+    const getFreetext = (index) => {
+      return index === 0 ? annotationFreetext1.value : annotationFreetext2.value;
+    }
 
     const saveAnnotation = () => {
+      console.log('save annotation');
       var content = {}
       for (const id in dataset.value.annotation_header) {
         const field = dataset.value.annotation_header[id];
         if (field.options !== 'freetext') {
-          content[field.name] = annotationLabel.value;
+          if (id === '0') {
+            content[field.name] = annotationLabel1.value;
+          }
+          if (id === '1') {
+            content[field.name] = annotationLabel2.value;
+          }
         } else {
-          content[field.name] = annotationFreetext.value;
+          if (id === '0') {
+            content[field.name] = annotationFreetext1.value;
+          }
+          if (id === '1') {
+            content[field.name] = annotationFreetext2.value;
+          }
         }
       }
       datasetService.updateRow(props.id, currentRow.value, content);
       showSuccessAlert.value = true;
       setTimeout(dismissAlert, 3000);
-      annotationFreetext.value = null;
-      annotationLabel.value = null;
+      annotationFreetext1.value = null;
+      annotationFreetext2.value = null;
+      annotationLabel1.value = null;
+      annotationLabel2.value = null;
       nextRow();
     };
 
@@ -74,18 +101,31 @@ export default defineComponent({
           dataset.value.authors = data.data.authors;
           dataset.value.content = data.data.content;
           dataset.value.total_items = data.data.total_items;
-
+          console.log(dataset.value.annotation_header);
+          console.log(dataset.value.header);
           // If row has annotation value, add it
           for (const id in dataset.value.annotation_header) {
             const field = dataset.value.annotation_header[id];
             if (field.options !== 'freetext') {
-              annotationLabel.value = dataset.value.content[0][field.name];
+              if (id === '0') {
+                annotationLabel1.value = dataset.value.content[0][field.name];
+              }
+              if (id === '1') {
+                annotationLabel2.value = dataset.value.content[0][field.name];
+              }
             } else {
-              annotationFreetext.value = dataset.value.content[0][field.name];
+              if (id === '0') {
+                annotationFreetext1.value = dataset.value.content[0][field.name];
+              }
+              if (id === '1') {
+                annotationFreetext2.value = dataset.value.content[0][field.name];
+              }
             }
           }
         });
       });
+      console.log(annotationFreetext1.value);
+      console.log(annotationFreetext2.value);
     };
 
     onBeforeMount(() => {
@@ -97,7 +137,9 @@ export default defineComponent({
     });
 
     watch(textareaRef, (newValue) => {
-      textareaRef.value[0].focus();
+      if (textareaRef.value) {
+        textareaRef.value[0].focus();
+      }
     });
 
     // Iteration
@@ -127,9 +169,19 @@ export default defineComponent({
           for (const id in dataset.value.annotation_header) {
             const field = dataset.value.annotation_header[id];
             if (field.options !== 'freetext') {
-              annotationLabel.value = dataset.value.content[0][field.name];
+              if (id === '0') {
+                annotationLabel1.value = dataset.value.content[0][field.name];
+              }
+              if (id === '1') {
+                annotationLabel2.value = dataset.value.content[0][field.name];
+              }
             } else {
-              annotationFreetext.value = dataset.value.content[0][field.name];
+              if (id === '0') {
+                annotationFreetext1.value = dataset.value.content[0][field.name];
+              }
+              if (id === '1') {
+                annotationFreetext2.value = dataset.value.content[0][field.name];
+              }
             }
           }
         });
@@ -159,14 +211,26 @@ export default defineComponent({
           for (const id in dataset.value.annotation_header) {
             const field = dataset.value.annotation_header[id];
             if (field.options !== 'freetext') {
-              annotationLabel.value = dataset.value.content[0][field.name];
+              if (id === '0') {
+                annotationLabel1.value = dataset.value.content[0][field.name];
+              }
+              if (id === '1') {
+                annotationLabel2.value = dataset.value.content[0][field.name];
+              }
             } else {
-              annotationFreetext.value = dataset.value.content[0][field.name];
+              if (id === '0') {
+                annotationFreetext1.value = dataset.value.content[0][field.name];
+              }
+              if (id === '1') {
+                annotationFreetext2.value = dataset.value.content[0][field.name];
+              }
             }
           }
         });
       });
-      textareaRef.value[0].focus();
+      if (textareaRef.value) {
+        textareaRef.value[0].focus();
+      }
     }};
 
     watch(currentRow, (newValue) => {
@@ -179,11 +243,46 @@ export default defineComponent({
       return value ? value : '';
     };
 
+
+    const isObjectWithProperties = (item: any, properties: string[]): boolean => {
+      if (typeof item === 'object' && item !== null) {
+        return properties.every(prop => prop in item);
+      }
+      return false;
+    };
+
+    const isArrayOfObjects = (data: any): [boolean, any] => {
+      try {
+        data = data.replace(/'([a-zA-Z0-9_]+)':/g, '"$1":');
+        data = data.replace(/: '([^']*)'/g, (match, p1) => {
+          const escapedValue = p1.replace(/"/g, '\\"');
+          return `: "${escapedValue}"`;
+        });
+        data = JSON.parse(data);
+        if (Array.isArray(data)) {
+          if (data.every(item => isObjectWithProperties(item, ['input', 'explanation']))) {
+            return [true, data];
+          } else {
+            return [false, data];
+          }
+        } else {
+          return [false, data];
+        }
+      } catch (e) {
+        return [false, data];
+      }
+    };
+
     return {
       dataset,
       textareaRef,
-      annotationFreetext,
-      annotationLabel,
+      updateFreetext,
+      getFreetext,
+      annotationFreetext1,
+      annotationFreetext2,
+      updateLabel,
+      annotationLabel1,
+      annotationLabel2,
       saveAnnotation,
       inspectMode,
       showSuccessAlert,
@@ -193,6 +292,7 @@ export default defineComponent({
       nextRow,
       isLoaded,
       getLabelById,
+      isArrayOfObjects,
       t$: useI18n().t,
     };
   },
