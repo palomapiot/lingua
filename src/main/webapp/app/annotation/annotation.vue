@@ -6,19 +6,23 @@
     </div>
 
     <div class="row" v-if="isLoaded">
-        <div class="col-md-9">
+        <div class="col-md-8">
             <h3 v-if="dataset">
             {{ dataset.name }}
             <small class="text-body-secondary">{{ dataset.authors }}</small>
             </h3>
         </div>
-        <div class="col-md-3" style="float: right;">
+        <div class="col-md-4" style="float: right;">
             <div>
                 <div>
                     <button type="button" class="btn btn-success" v-on:click="saveAnnotation" style="float: right; margin-left: 1em" v-text="t$('dataset.save')"></button>   
                 </div>
                 <div>
-                    <a type="button" class="btn btn-outline-info" @click="inspectMode" v-text="t$('dataset.inspect-mode')" style="float: right;"></a> 
+                    <a type="button" class="btn btn-outline-info" @click="inspectMode" v-text="t$('dataset.inspect-mode')" style="float: right; margin-left: 1em"></a> 
+                </div>
+                <div style="display: flex; align-items: center; float: right;">
+                    <input style="width: 120px; margin-right: 1em;" type="text" class="form-control" id="rowInput" aria-describedby="rowInput" v-bind:placeholder="t$('dataset.row')">
+                    <a type="button" class="btn btn-outline-info" @click="goToRow" v-text="t$('dataset.go')" style="float: right;"></a> 
                 </div>
             </div>
         </div>
@@ -33,6 +37,26 @@
                             <ol>
                                 <li v-for="(item, index) in isArrayOfObjects(getLabelById(dataset.content[0], k))[1]" :key="index">
                                     <p class="lead text-muted"><p class="text-info">{{ item.input }}:</p> {{ item.explanation }}</p>
+                                    <!-- TODO: de momento para este tipo de campo, genero para etiquetar en true, false la etiqueta "correcto", en un futuro implementarlo bien-->
+                                    <h5 class="card-title">Correct</h5>
+                                    <div class="bs-component mb-6">
+                                        <div class="btn-group" role="group" :id="'fieldList' + (index + 1)"
+                                        aria-label="">
+                                            <div v-for="ah_value in ['true', 'false']">
+                                            <input 
+                                                type="radio"
+                                                class="btn-check"
+                                                :name="'fieldList' + (index + 1)"
+                                                :value="ah_value"
+                                                :id="'fieldList' + index + ah_value"
+                                                autocomplete="off"
+                                                :checked="annotationFieldList[index] === ah_value"
+                                                @change="updateFieldList(index, ah_value)">
+                                            </input>
+                                            <label class="btn btn-outline-primary" :for="'fieldList' + index + ah_value">{{ ah_value }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </li>
                             </ol>
                         </div>

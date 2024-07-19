@@ -31,6 +31,8 @@
     "type": "Tipo: ",
     "text": "Texto",
     "label": "Etiqueta",
-    "labels": "Etiquetas, separadas por comas"
+    "labels": "Etiquetas, separadas por comas",
+    "fieldName": "Nombre del campo",
+    "multipleAnnotationfieldName": "Anotar campo con varias etiquetas"
   }
 }

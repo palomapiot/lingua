@@ -53,6 +53,7 @@ export default defineComponent({
     const isFreetext2 = ref(false);
     const isLabel2 = ref(false);
     const labelsList2 = ref([]);
+    const multipleAnnotationFieldName = ref("");
     const isModalOpen = ref(false);
     const showDangerAlert = ref(false);
 
@@ -141,16 +142,24 @@ export default defineComponent({
     // Export dataset (of selected rows)
     const selectAllRows = (e) => {
       //  TODO: if there is a query, select all will only select the rows that fulfill the query requirements
-      const isChecked = e.target.checked;
-      if (isChecked) {
-        dataset.value.content.forEach(function (row) {
-          selectedRows.value[row.line_number] = true;
-        });
-      } else {
-        dataset.value.content.forEach(function (row) {
-          selectedRows.value[row.line_number] = false;
-        });
-      }
+
+      // get all dataset elements -> so we can check all the content
+      const full_content = ref({});
+      datasetService.getDataset(props.id, dataset.value.total_items, 1)
+      .then(data => {
+        full_content.value = data.data.content;
+        const isChecked = e.target.checked;
+        if (isChecked) {
+          full_content.value.forEach(function (row) {
+            selectedRows.value[row.line_number] = true;
+          });
+        } else {
+          full_content.value.forEach(function (row) {
+            selectedRows.value[row.line_number] = false;
+          });
+        }
+      });
+
     };
 
     const exportDataset = () => {
@@ -318,6 +327,7 @@ export default defineComponent({
       isFreetext2,
       isLabel2,
       labelsList2,
+      multipleAnnotationFieldName,
       showDangerAlert,
       dismissAlert,
       isArrayOfObjects,

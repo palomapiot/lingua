@@ -6,6 +6,7 @@
         "previous": "< Anterior",
         "next": "Seguinte >",
         "filter": "Filtrar",
-        "save": "Gardar"
+        "save": "Gardar",
+        "go-to-row": "Ir á fila"
     }
 }

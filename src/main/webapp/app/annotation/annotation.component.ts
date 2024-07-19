@@ -21,6 +21,7 @@ export default defineComponent({
     const annotationFreetext2 = ref(null);
     const annotationLabel1 = ref(null);
     const annotationLabel2 = ref(null);
+    const annotationFieldList = ref([]);
     const showSuccessAlert = ref(false);
     const isLoaded = ref(false);
 
@@ -38,6 +39,10 @@ export default defineComponent({
       } else {
         annotationFreetext2.value = value;
       }
+    }
+
+    const updateFieldList = (index, value) => {
+      annotationFieldList.value[index] = value;
     }
 
     const getFreetext = (index) => {
@@ -65,6 +70,22 @@ export default defineComponent({
           }
         }
       }
+      // TODO: hardcodeamos de momento los nombres de los campos, en un futuro, debemos recuperar del back este valor y actualizar su contenido
+      const fields = ['explanation', 'rationales_cot_llama3_70b', 'rationales_cot_llama3_8b_base_explanation'];
+      for (const id in fields) {
+        const fieldName = fields[id];
+        if (dataset.value.header.indexOf(fieldName) > -1) {
+          var listFieldParsed = isArrayOfObjects(getLabelById(dataset.value.content[0], fieldName))[1];
+          for (const idx in listFieldParsed) {
+            listFieldParsed[idx]['correct'] = annotationFieldList.value[idx];
+          }
+          if (listFieldParsed !== undefined) {
+            content[fieldName] = JSON.stringify(listFieldParsed);
+            content[fieldName] = content[fieldName].replace(/'/g, "\\'");
+          }
+        } 
+      }
+
       datasetService.updateRow(props.id, currentRow.value, content);
       showSuccessAlert.value = true;
       setTimeout(dismissAlert, 3000);
@@ -72,6 +93,7 @@ export default defineComponent({
       annotationFreetext2.value = null;
       annotationLabel1.value = null;
       annotationLabel2.value = null;
+      annotationFieldList.value = [];
       nextRow();
     };
 
@@ -101,8 +123,6 @@ export default defineComponent({
           dataset.value.authors = data.data.authors;
           dataset.value.content = data.data.content;
           dataset.value.total_items = data.data.total_items;
-          console.log(dataset.value.annotation_header);
-          console.log(dataset.value.header);
           // If row has annotation value, add it
           for (const id in dataset.value.annotation_header) {
             const field = dataset.value.annotation_header[id];
@@ -122,10 +142,9 @@ export default defineComponent({
               }
             }
           }
+          console.log(dataset.value);
         });
       });
-      console.log(annotationFreetext1.value);
-      console.log(annotationFreetext2.value);
     };
 
     onBeforeMount(() => {
@@ -146,6 +165,49 @@ export default defineComponent({
     // TODO: currentRow --> persistir este valor y al cambiar al annotation mode cargarlo y seguir por ahí.
     const currentRow = ref(1);
 
+    const goToRow = () => {
+      currentRow.value = document.getElementById('rowInput').value;
+      datasetService.getDataset(props.id, 1, currentRow.value)
+      .then(data => {
+        datasetService.getDatasetFields(props.id)
+        .then(fields => {
+          dataset.value.header = fields.data.filter(item => !item.annotate).map(item => item.name);
+          dataset.value.annotation_header = fields.data
+          .filter(item => item.annotate)
+          .map(item => ({
+            name: item.name,
+            options: item.options ? item.options : "freetext"
+          }));
+          dataset.value.id = data.data.id;
+          dataset.value.name = data.data.name;
+          dataset.value.authors = data.data.authors;
+          dataset.value.content = data.data.content; 
+          dataset.value.total_items = data.data.total_items;
+          annotationFieldList.value = [];
+          // If row has annotation value, add it
+          for (const id in dataset.value.annotation_header) {
+            const field = dataset.value.annotation_header[id];
+            if (field.options !== 'freetext') {
+              if (id === '0') {
+                annotationLabel1.value = dataset.value.content[0][field.name];
+              }
+              if (id === '1') {
+                annotationLabel2.value = dataset.value.content[0][field.name];
+              }
+            } else {
+              if (id === '0') {
+                annotationFreetext1.value = dataset.value.content[0][field.name];
+              }
+              if (id === '1') {
+                annotationFreetext2.value = dataset.value.content[0][field.name];
+              }
+            }
+          }
+          document.getElementById('rowInput').value = '';
+        });
+      });
+    };
+
     const prevRow = () => {
     if (currentRow.value > 1) {
       currentRow.value = currentRow.value - 1;
@@ -165,6 +227,7 @@ export default defineComponent({
           dataset.value.authors = data.data.authors;
           dataset.value.content = data.data.content; 
           dataset.value.total_items = data.data.total_items;
+          annotationFieldList.value = [];
           // If row has annotation value, add it
           for (const id in dataset.value.annotation_header) {
             const field = dataset.value.annotation_header[id];
@@ -207,6 +270,7 @@ export default defineComponent({
           dataset.value.authors = data.data.authors;
           dataset.value.content = data.data.content; 
           dataset.value.total_items = data.data.total_items;
+          annotationFieldList.value = [];
           // If row has annotation value, add it
           for (const id in dataset.value.annotation_header) {
             const field = dataset.value.annotation_header[id];
@@ -261,6 +325,13 @@ export default defineComponent({
         data = JSON.parse(data);
         if (Array.isArray(data)) {
           if (data.every(item => isObjectWithProperties(item, ['input', 'explanation']))) {
+            if (annotationFieldList.value.length === 0) {
+              for (const index in data) {
+                if (isObjectWithProperties(data[index], ['correct'])) {
+                  annotationFieldList.value[index] = data[index]['correct'];
+                }
+              }
+            }
             return [true, data];
           } else {
             return [false, data];
@@ -283,11 +354,14 @@ export default defineComponent({
       updateLabel,
       annotationLabel1,
       annotationLabel2,
+      annotationFieldList,
+      updateFieldList,
       saveAnnotation,
       inspectMode,
       showSuccessAlert,
       dismissAlert,
       currentRow,
+      goToRow,
       prevRow,
       nextRow,
       isLoaded,

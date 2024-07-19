@@ -127,6 +127,7 @@
                         <label v-show="isLabel1" for="labelsList1" class="form-label mt-4" v-text="t$('home.labels')"></label>
                         <input v-show="isLabel1" type="text" class="form-control" id="labelsList1" aria-describedby="labelsList1" v-model="labelsList1" v-bind:placeholder="t$('home.labels')" required>
                     </div>
+                    <!-- TODO: añadir un checkbox the "annotate field with multiple labels" para generar una etiqueta por cada elemento en un campo tipo lista y pedir el nombre del campo tipo lista-->
                     <div>
                         <label for="fieldName2" class="form-label mt-4" v-text="t$('home.field-name')"></label>
                         <input type="text" class="form-control" id="fieldName2" aria-describedby="fieldName2" v-model="fieldName2" v-bind:placeholder="t$('home.field-name')" required>
@@ -156,7 +157,11 @@
                         <label v-show="isLabel2" for="labelsList2" class="form-label mt-4" v-text="t$('home.labels')"></label>
                         <input v-show="isLabel2" type="text" class="form-control" id="labelsList2" aria-describedby="labelsList2" v-model="labelsList2" v-bind:placeholder="t$('home.labels')" required>
                     </div>
-                    <!-- Annotate on sentence level if column is a list-->
+                    <!-- TODO: Annotate on sentence level if column is a list-->
+                    <!--<div>
+                        <label for="multipleAnnotationFieldName" class="form-label mt-4" v-text="t$('home.multipleAnnotationfieldName')"></label>
+                        <input type="text" class="form-control" id="multipleAnnotationFieldName" aria-describedby="multipleAnnotationFieldName" v-model="multipleAnnotationFieldName" v-bind:placeholder="t$('home.field-name')" required>
+                    </div>-->
 
                 </fieldset>
                 </form>
